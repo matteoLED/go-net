@@ -3,19 +3,24 @@ package main
 import (
 	"fmt"
 	"go-net/internal/server"
-
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/layers"
+	"sync"
 )
 
 func main() {
 	port := 8080
 	serverInstance := server.NewServer(port)
 
-	packet := gopacket.NewPacket([]byte{0, 1, 2, 3}, layers.LayerTypeEthernet, gopacket.Default)
+	// Créez un WaitGroup pour synchroniser la goroutine de comptage
+	var wg sync.WaitGroup
+	packetChannel := make(chan int)
 
-	server.NetworkHandler(packet)
+	serverInstance.PacketCount(&wg, packetChannel)
 
+	// Lancez la goroutine qui compte les paquets
+	wg.Add(1)
+	go serverInstance.PacketCount(&wg, packetChannel)
+
+	// Démarrer le serveur
 	err := serverInstance.Start()
 	if err != nil {
 		panic(err)
