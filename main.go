@@ -1,15 +1,27 @@
 package main
 
 import (
-	"go-net/internal/server" // Use the correct relative path
+	"fmt"
+	"go-net/internal/server"
+
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
 )
 
 func main() {
 	port := 8080
-	server := server.NewServer(port) // Use NewServer here
+	serverInstance := server.NewServer(port)
 
-	err := server.Start()
+	packet := gopacket.NewPacket([]byte{0, 1, 2, 3}, layers.LayerTypeEthernet, gopacket.Default)
+
+	server.NetworkHandler(packet)
+
+	err := serverInstance.Start()
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("Server is running on port %d...\n", port)
+
+	select {}
 }

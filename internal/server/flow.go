@@ -6,10 +6,10 @@ import (
 
 // Flow représente un flux réseau.
 type Flow struct {
-	SourceIP        string
-	DestinationIP   string
-	SourcePort      uint16
-	DestinationPort uint16
+	SourceIP        string `json:"source_ip"`
+	DestinationIP   string `json:"destination_ip"`
+	SourcePort      uint16 `json:"source_port"`
+	DestinationPort uint16 `json:"destination_port"`
 }
 
 // FlowTracker permet de suivre les flux réseau.
